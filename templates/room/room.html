@@ -13,6 +13,30 @@
 
 
 {% block content %}
+<div class="float-end mt-5">
+    <div >
+        <h3></h3>
+    </div>
+    <div>
+        <input id="url-field" type="text" class="form-control" style="width:30rem; margin:2rem; margin-bottom:1rem;" placeholder="Enter youtube url"/>
+        <button class="btn btn-primary" id="add-track" title="Add track to playlist" onclick="addTrack()" style="margin-left:2rem;">Add Track</button>
+    </div>
+    <div>
+        <!--Youtube-->
+        <div id="player"></div>
+        <!--Player-->
+    </div>
+    <div id="playback-controls">
+        <button class="btn btn-primary" id="play-button">Play</button>
+        <button class="btn btn-primary" id="pause-button">Pause</button>
+    </div>
+    <form id="post-form">
+        {% csrf_token %}
+        <input id="title" type="text" class="form-control" style="width:30rem; margin:2rem; margin-bottom:1rem;" placeholder="Enter Titel"/>
+        <input id="url" type="text" class="form-control" style="width:30rem; margin:2rem; margin-bottom:1rem;" placeholder="Enter youtube url"/>
+        <button type="submit" class="btn btn-primary" title="Add track to playlist" style="margin-left:2rem;">Add Song</button>  
+    </form>
+    </div>
 <div class="px-4 py-2 my-5 text-center">
     <h1 class="">{{ room.name }}</h1>
 </div>
@@ -34,29 +58,40 @@
         <button class="btn btn-primary" style="margin-left:2rem;" id="chat-message-submit">Send</button>
     </form>
 </div>
-<div>
-    <h1>Player</h1>
-</div>
-<div>
-    <input id="url-field" type="text" class="form-control" style="width:30rem; margin:2rem; margin-bottom:1rem;" placeholder="Enter youtube url"/>
-    <button class="btn btn-primary" id="add-track" title="Add track to playlist" onclick="addTrack()" style="margin-left:2rem;">Add Track</button>
-</div>
-<div>
-    <!--Youtube-->
-    <div id="player"></div>
-    <!--Player-->
-</div>
-<div id="playback-controls">
-    <button class="btn btn-primary" id="play-button">Play</button>
-    <button class="btn btn-primary" id="pause-button">Pause</button>
-</div>
+
 {% endblock %}
+
 
 {% block scripts %}
 {{ room.slug|json_script:"json-roomname" }}
 {{ request.user.username|json_script:"json-username" }}
 
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous"></script>
 <script src="{% static 'js/socket.js' %}"></script>
 <script src="{% static 'js/player.js' %}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $(document).on('submit', '#post-form', function(event){
+            event.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url:'/rooms/create',
+                data:{
+                    title:$('#title').val(),
+                    url:$('#url').val(),
+                    room:JSON.parse(document.getElementById('json-roomname').textContent),
+                    csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(data){
+                $("h3").html(data);
+                }
+            })
+    
+        })
+
+        
+    })
+
+</script>
 {% endblock %}

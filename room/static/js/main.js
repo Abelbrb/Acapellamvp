@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 function youtube_parser(url) {
     let regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     let match = url.match(regExp);

@@ -7,6 +7,25 @@ class Room(models.Model):
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
 
+    def __str__(self):
+        return self.name
+
+class Song(models.Model):
+    song_name=models.CharField(max_length=200)
+    songurl= models.URLField(max_length=250)
+
+    def __str__(self):
+        return self.song_name
+
+class Playlist(models.Model):
+    list_name=models.CharField(max_length=100)
+    room=models.ForeignKey(Room,on_delete=models.CASCADE,default=1)
+    song=models.ManyToManyField(Song)
+
+    def __str__(self):
+        return self.list_name
+
+
 class Message(models.Model):
     room = models.ForeignKey(Room, related_name='messages', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='messages', on_delete=models.CASCADE)

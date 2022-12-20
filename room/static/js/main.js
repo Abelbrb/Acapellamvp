@@ -11,7 +11,7 @@ function youtube_parser(url) {
 
 function onYouTubeIframeAPIReady() {
     player = new YT.Player("player", {
-        height: "360",
+        height: "200",
         width: "640",
         videoId: "",
         playerVars: { controls: 0, disablekb: 1 },
